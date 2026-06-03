@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline';">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0F1117;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      border-radius: 14px;
+      -webkit-app-region: drag;
+      user-select: none;
+      position: relative;
+    }
+
+    .glow {
+      position: absolute;
+      left: -40px; top: 50%;
+      transform: translateY(-50%);
+      width: 240px; height: 240px;
+      background: radial-gradient(circle, rgba(239,159,39,0.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .grid line { stroke: #EF9F27; stroke-width: 0.3; opacity: 0.08; }
+
+    /* ── Left ── */
+    .left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0 44px;
+      flex: 0 0 auto;
+      z-index: 1;
+    }
+
+    .icon-wrap {
+      margin-bottom: 20px;
+      animation: pop 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .icon-wrap svg { width: 88px; height: 88px; display: block; }
+
+    .brand {
+      font-size: 58px;
+      font-weight: 300;
+      letter-spacing: -1.5px;
+      color: #fff;
+      line-height: 1;
+      animation: fadeUp 0.4s 0.1s ease both;
+    }
+
+    .tagline {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      color: #EF9F27;
+      margin-top: 8px;
+      animation: fadeUp 0.4s 0.15s ease both;
+    }
+
+    .divider {
+      width: 200px;
+      height: 0.5px;
+      background: rgba(239,159,39,0.3);
+      margin: 14px 0;
+      animation: fadeUp 0.4s 0.2s ease both;
+    }
+
+    .copy {
+      font-size: 15px;
+      font-weight: 300;
+      color: #E5E7EB;
+      line-height: 1.6;
+      animation: fadeUp 0.4s 0.25s ease both;
+    }
+
+    .pills {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+      animation: fadeUp 0.4s 0.3s ease both;
+    }
+    .pill {
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      background: #2A1A04;
+      border: 0.5px solid #B86E00;
+      color: #F5C842;
+    }
+
+    /* ── Right ── */
+    .right {
+      flex: 1;
+      padding: 20px 28px 20px 12px;
+      z-index: 1;
+      animation: fadeIn 0.5s 0.35s ease both;
+    }
+
+    .mockup {
+      background: #13151F;
+      border-radius: 10px;
+      border: 0.5px solid rgba(239,159,39,0.25);
+      padding: 16px;
+      width: 100%;
+    }
+
+    .mock-topbar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 0.5px solid #1A1D2A;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot-r { background: #D85A30; opacity: 0.7; }
+    .dot-y { background: #EF9F27; opacity: 0.7; }
+    .dot-g { background: #1D9E75; opacity: 0.9; }
+    .mock-label { font-size: 9px; color: #4B5563; margin-left: 4px; }
+
+    .mock-cards { display: flex; gap: 6px; margin-bottom: 10px; }
+    .mock-card {
+      flex: 1;
+      background: #0F1117;
+      border-radius: 4px;
+      padding: 7px 8px;
+      border: 0.5px solid #2A2D3A;
+    }
+    .mock-card-label { font-size: 8px; color: #EF9F27; margin-bottom: 3px; }
+    .mock-card-val   { font-size: 13px; font-weight: 500; color: #fff; }
+    .mock-card-sub   { font-size: 7px; margin-top: 2px; }
+    .green  { color: #1D9E75; }
+    .amber  { color: #EF9F27; }
+    .blue   { color: #3B6FE8; }
+    .purple { color: #7F77DD; }
+
+    .mock-chart {
+      background: #0F1117;
+      border: 0.5px solid #2A2D3A;
+      border-radius: 4px;
+      padding: 7px 8px;
+      margin-bottom: 8px;
+    }
+    .mock-chart-label { font-size: 8px; font-weight: 500; color: #E5E7EB; margin-bottom: 6px; }
+    .bars { display: flex; align-items: flex-end; gap: 4px; height: 38px; }
+    .bar-grp { display: flex; align-items: flex-end; gap: 2px; flex: 1; }
+    .bar { border-radius: 2px 2px 0 0; flex: 1; }
+    .bar-a { background: #EF9F27; }
+    .bar-b { background: #1D9E75; opacity: 0.7; }
+    .bar-lbl { font-size: 6px; color: #4B5563; text-align: center; margin-top: 2px; }
+    .bar-col { display: flex; flex-direction: column; flex: 1; }
+
+    .mock-list {
+      background: #0F1117;
+      border: 0.5px solid #2A2D3A;
+      border-radius: 4px;
+      padding: 7px 8px;
+    }
+    .mock-list-label { font-size: 8px; font-weight: 500; color: #E5E7EB; margin-bottom: 5px; border-bottom: 0.5px solid #1A1D2A; padding-bottom: 4px; }
+    .list-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; font-size: 8px; color: #E5E7EB; border-bottom: 0.5px solid rgba(26,29,42,0.5); }
+    .list-row:last-child { border-bottom: none; }
+    .list-tag { padding: 1px 5px; border-radius: 6px; font-size: 7px; }
+    .tag-green  { background: rgba(29,158,117,0.2);  color: #1D9E75; }
+    .tag-amber  { background: rgba(239,159,39,0.2);  color: #EF9F27; }
+    .tag-purple { background: rgba(127,119,221,0.2); color: #7F77DD; }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 5px;
+      background: #13151F;
+      border-radius: 0 0 14px 14px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #B86E00, #F5C842, #EF9F27);
+      box-shadow: 0 0 8px rgba(239,159,39,0.5);
+      animation: load 1.6s 0.15s cubic-bezier(0.4,0,0.2,1) both;
+      width: 0%;
+    }
+
+    @keyframes load {
+      0%   { width: 0%; }
+      60%  { width: 72%; }
+      100% { width: 100%; }
+    }
+    @keyframes pop {
+      from { opacity: 0; transform: scale(0.7); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <svg class="grid" viewBox="0 0 700 380" preserveAspectRatio="none">
+    <line x1="0" y1="127" x2="700" y2="127"/>
+    <line x1="0" y1="254" x2="700" y2="254"/>
+    <line x1="175" y1="0" x2="175" y2="380"/>
+    <line x1="350" y1="0" x2="350" y2="380"/>
+    <line x1="525" y1="0" x2="525" y2="380"/>
+  </svg>
+  <div class="glow"></div>
+
+  <!-- Left panel -->
+  <div class="left">
+    <div class="icon-wrap">
+      <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="gg" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#EF9F27" stop-opacity="0.22"/>
+            <stop offset="100%" stop-color="#0A0B14" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="gag" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#F5C842"/>
+            <stop offset="100%" stop-color="#B86E00"/>
+          </linearGradient>
+        </defs>
+        <!-- outer ring -->
+        <circle cx="80" cy="80" r="78" fill="none" stroke="#EF9F27" stroke-width="1" opacity="0.15"/>
+        <circle cx="80" cy="80" r="68" fill="#0F1117"/>
+        <circle cx="80" cy="80" r="60" fill="url(#gg)"/>
+        <!-- center person -->
+        <circle cx="80" cy="58" r="14" fill="none" stroke="url(#gag)" stroke-width="2.5"/>
+        <circle cx="80" cy="58" r="9"  fill="#2A1A04"/>
+        <circle cx="80" cy="55" r="5"  fill="#F5C842"/>
+        <!-- left person -->
+        <circle cx="36" cy="108" r="10" fill="none" stroke="#EF9F27" stroke-width="2" opacity="0.8"/>
+        <circle cx="36" cy="108" r="5.5" fill="#2A1A04"/>
+        <circle cx="36" cy="106" r="3"   fill="#EF9F27" opacity="0.9"/>
+        <!-- right person -->
+        <circle cx="124" cy="108" r="10" fill="none" stroke="#EF9F27" stroke-width="2" opacity="0.8"/>
+        <circle cx="124" cy="108" r="5.5" fill="#2A1A04"/>
+        <circle cx="124" cy="106" r="3"   fill="#EF9F27" opacity="0.9"/>
+        <!-- connector lines -->
+        <line x1="72" y1="70" x2="42"  y2="99"  stroke="#EF9F27" stroke-width="1.5" opacity="0.4"/>
+        <line x1="88" y1="70" x2="118" y2="99"  stroke="#EF9F27" stroke-width="1.5" opacity="0.4"/>
+        <line x1="80" y1="72" x2="80"  y2="88"  stroke="#EF9F27" stroke-width="1.5" opacity="0.25"/>
+        <!-- bottom person -->
+        <circle cx="80" cy="116" r="9" fill="none" stroke="#EF9F27" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="80" cy="116" r="4.5" fill="#2A1A04"/>
+        <circle cx="80" cy="114" r="2.5" fill="#EF9F27" opacity="0.8"/>
+      </svg>
+    </div>
+
+    <div class="brand">Gero</div>
+    <div class="tagline">GESTÃO DE RH</div>
+    <div class="divider"></div>
+    <div class="copy">Pessoas que<br>geram resultados.</div>
+
+    <div class="pills">
+      <span class="pill">Folha</span>
+      <span class="pill">Ponto</span>
+      <span class="pill">Recrutamento</span>
+    </div>
+  </div>
+
+  <!-- Right panel — HR mockup -->
+  <div class="right">
+    <div class="mockup">
+      <div class="mock-topbar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="mock-label">Dashboard · junho 2026</span>
+      </div>
+
+      <div class="mock-cards">
+        <div class="mock-card">
+          <div class="mock-card-label">Funcionários</div>
+          <div class="mock-card-val">42</div>
+          <div class="mock-card-sub green">↑ +3 este mês</div>
+        </div>
+        <div class="mock-card">
+          <div class="mock-card-label">Folha do Mês</div>
+          <div class="mock-card-val">R$198k</div>
+          <div class="mock-card-sub amber">8 em aberto</div>
+        </div>
+        <div class="mock-card">
+          <div class="mock-card-label">Vagas Abertas</div>
+          <div class="mock-card-val">7</div>
+          <div class="mock-card-sub purple">24 candidatos</div>
+        </div>
+      </div>
+
+      <div class="mock-chart">
+        <div class="mock-chart-label">Headcount por departamento</div>
+        <div class="bars">
+          <div class="bar-col"><div class="bar-grp"><div class="bar bar-a" style="height:32px"></div></div><div class="bar-lbl">TI</div></div>
+          <div class="bar-col"><div class="bar-grp"><div class="bar bar-a" style="height:24px"></div></div><div class="bar-lbl">Vendas</div></div>
+          <div class="bar-col"><div class="bar-grp"><div class="bar bar-a" style="height:18px"></div></div><div class="bar-lbl">Fin.</div></div>
+          <div class="bar-col"><div class="bar-grp"><div class="bar bar-b" style="height:14px"></div></div><div class="bar-lbl">RH</div></div>
+          <div class="bar-col"><div class="bar-grp"><div class="bar bar-b" style="height:10px"></div></div><div class="bar-lbl">Op.</div></div>
+        </div>
+      </div>
+
+      <div class="mock-list">
+        <div class="mock-list-label">Ponto pendente de aprovação</div>
+        <div class="list-row"><span>Ana Souza</span><span class="list-tag tag-amber">pendente</span></div>
+        <div class="list-row"><span>Carlos Silva</span><span class="list-tag tag-green">aprovado</span></div>
+        <div class="list-row"><span>Pedro Oliveira</span><span class="list-tag tag-purple">em análise</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-fill"></div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline';">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0F1117;
+      color: #E5E7EB;
+      display: grid;
+      grid-template-rows: 40px 1fr;
+      border-radius: 14px;
+      -webkit-app-region: drag;
+      user-select: none;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      display: flex; align-items: center; padding: 0 20px;
+      background: #080910; border-bottom: 1px solid #13141f;
+      justify-content: space-between;
+    }
+    .topbar-logo  { display: flex; align-items: center; gap: 8px; }
+    .topbar-icon  {
+      width: 20px; height: 20px;
+      background: linear-gradient(135deg, #EF9F27, #B86E00);
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .topbar-icon svg { width: 12px; height: 12px; color: #fff; }
+    .topbar-name  { font-size: 13px; font-weight: 600; color: #fff; }
+    .topbar-sep   { margin: 0 8px; color: #2A2D3A; }
+    .topbar-page  { font-size: 12px; color: #4B5563; }
+
+    /* Window controls */
+    .win-controls { display: flex; align-items: center; gap: 2px; -webkit-app-region: no-drag; }
+    .wc-btn {
+      width: 34px; height: 28px; border-radius: 6px;
+      background: rgba(255,255,255,0.04); color: #6B7280;
+      border: 0.5px solid transparent;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 13px; cursor: pointer;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+      -webkit-app-region: no-drag;
+    }
+    .wc-btn:hover { background: rgba(255,255,255,0.10); color: #fff; border-color: #2A2D3A; }
+    .wc-close:hover { background: #D85A30; color: #fff; border-color: #D85A30; }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid; grid-template-columns: 240px 1fr;
+      overflow: hidden; min-height: 0;
+    }
+
+    /* ── Left panel ── */
+    .left-panel {
+      background: #080910; border-right: 1px solid #13141f;
+      display: flex; flex-direction: column;
+      padding: 28px 22px; overflow: hidden;
+    }
+    .lp-brand { margin-bottom: 36px; }
+    .lp-brand-name { font-size: 28px; font-weight: 300; color: #fff; letter-spacing: -0.5px; }
+    .lp-brand-tag  { font-size: 9px; color: #EF9F27; letter-spacing: 3px; font-weight: 500; margin-top: 5px; }
+
+    .lp-steps { display: flex; flex-direction: column; gap: 2px; }
+    .lp-step  {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; border-radius: 8px;
+    }
+    .lp-step.active { background: #1A1204; }
+
+    .lp-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 1.5px solid #2A2D3A;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: #4B5563; flex-shrink: 0;
+    }
+    .lp-step.active .lp-num { border-color: #EF9F27; background: #EF9F27; color: #fff; }
+    .lp-step.done   .lp-num { border-color: #B86E00; background: #2A1A04; color: #F5C842; }
+
+    .lp-label { font-size: 13px; color: #4B5563; }
+    .lp-step.active .lp-label { color: #E5E7EB; font-weight: 500; }
+    .lp-step.done   .lp-label { color: #6B7280; }
+
+    .lp-connector { width: 1px; height: 16px; background: #1A1D2A; margin-left: 24px; }
+    .lp-footer { margin-top: auto; font-size: 11px; color: #2A2D3A; line-height: 1.6; }
+
+    /* ── Right panel ── */
+    .right-panel {
+      display: grid; grid-template-rows: 1fr 64px;
+      overflow: hidden; min-width: 0;
+    }
+
+    .step {
+      display: none;
+      overflow-y: auto; padding: 28px 36px 20px;
+      -webkit-app-region: no-drag;
+    }
+    .step.active { display: block; }
+    .step::-webkit-scrollbar { width: 5px; }
+    .step::-webkit-scrollbar-track { background: transparent; }
+    .step::-webkit-scrollbar-thumb { background: #2A2D3A; border-radius: 10px; }
+    .step::-webkit-scrollbar-thumb:hover  { background: rgba(239,159,39,0.5); }
+    .step::-webkit-scrollbar-thumb:active { background: #EF9F27; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .step.active { animation: fadeIn 0.2s ease; }
+
+    .step-title    { font-size: 22px; font-weight: 300; color: #fff; letter-spacing: -0.4px; margin-bottom: 4px; }
+    .step-subtitle { font-size: 13px; color: #6B7280; margin-bottom: 22px; }
+
+    /* ── Shared footer ── */
+    .shared-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 36px;
+      border-top: 1px solid #13141f; background: #080910;
+      -webkit-app-region: no-drag;
+    }
+
+    /* ── Forms ── */
+    .form-grid        { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+    .form-grid.addr   { grid-template-columns: 3fr 1fr; }
+    .form-group       { display: flex; flex-direction: column; gap: 5px; }
+    .form-group.span2 { grid-column: 1 / -1; }
+    .form-label { font-size: 11px; font-weight: 600; color: #6B7280; letter-spacing: 0.6px; }
+    .form-input {
+      background: #0E0F1C; border: 1px solid #1A1D2A; border-radius: 7px;
+      color: #E5E7EB; font-size: 13px; padding: 9px 13px;
+      outline: none; transition: border-color 0.15s;
+      font-family: inherit; -webkit-app-region: no-drag;
+    }
+    .form-input:focus { border-color: #EF9F27; }
+    .form-input::placeholder { color: #2A2D3A; }
+    .section-sep {
+      font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+      color: #3A3D5A; text-transform: uppercase;
+      margin: 20px 0 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-sep::after { content: ''; flex: 1; height: 1px; background: #13141f; }
+
+    /* ── PG test ── */
+    .pg-test-row { display: flex; align-items: center; gap: 12px; margin: 16px 0 8px; }
+    .pg-status { font-size: 12px; padding: 5px 12px; border-radius: 5px; }
+    .pg-status.testing { color: #F5C842; background: rgba(239,159,39,0.1); }
+    .pg-status.ok      { color: #1D9E75; background: rgba(29,158,117,0.1); }
+    .pg-status.error   { color: #D85A30; background: rgba(216,90,48,0.1);  }
+
+    .pg-exists-banner {
+      display: none;
+      margin-top: 12px; padding: 12px 14px; border-radius: 8px;
+      border: 1px solid rgba(29,158,117,0.3);
+      background: rgba(29,158,117,0.08);
+      font-size: 12px; color: #1D9E75;
+    }
+    .pg-exists-banner.show { display: flex; align-items: center; gap: 10px; }
+    .pg-new-banner {
+      display: none;
+      margin-top: 12px; padding: 12px 14px; border-radius: 8px;
+      border: 1px solid rgba(239,159,39,0.25);
+      background: rgba(239,159,39,0.06);
+      font-size: 12px; color: #F5C842;
+    }
+    .pg-new-banner.show { display: flex; align-items: center; gap: 10px; }
+
+    .pass-hint { font-size: 11px; color: #4B5563; margin-top: 2px; }
+
+    /* ── Loading ── */
+    .loading-wrap {
+      height: 100%; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid #1A1D2A; border-top-color: #EF9F27;
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-title { font-size: 15px; font-weight: 300; color: #fff; }
+    .loading-sub   { font-size: 11px; color: #6B7280; }
+
+    /* ── Error message ── */
+    .error-msg {
+      font-size: 11px; color: #D85A30;
+      background: rgba(216,90,48,0.07); border: 1px solid rgba(216,90,48,0.18);
+      border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; display: none;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; border: none; border-radius: 7px; cursor: pointer;
+      font-family: inherit; font-size: 13px; font-weight: 500;
+      padding: 9px 20px; transition: opacity 0.15s, background 0.15s;
+      -webkit-app-region: no-drag;
+    }
+    .btn:disabled { opacity: 0.38; cursor: default; }
+    .btn-primary { background: #EF9F27; color: #fff; }
+    .btn-primary:not(:disabled):hover { background: #F5C842; color: #1A1204; }
+    .btn-success { background: #1D9E75; color: #fff; }
+    .btn-success:not(:disabled):hover { background: #22b584; }
+    .btn-ghost   { background: transparent; color: #6B7280; border: 1px solid #1A1D2A; }
+    .btn-ghost:not(:disabled):hover   { color: #E5E7EB; border-color: #2A2D3A; }
+    .btn-outline { background: transparent; color: #EF9F27; border: 1px solid #B86E00; }
+    .btn-outline:not(:disabled):hover { background: rgba(239,159,39,0.08); }
+    .btn.hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div class="topbar-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="12" cy="8" r="4"/>
+          <circle cx="6" cy="17" r="3"/>
+          <circle cx="18" cy="17" r="3"/>
+          <line x1="10" y1="11" x2="7" y2="14"/>
+          <line x1="14" y1="11" x2="17" y2="14"/>
+        </svg>
+      </div>
+      <span class="topbar-name">Gero</span>
+      <span class="topbar-sep">/</span>
+      <span class="topbar-page">Configuração inicial</span>
+    </div>
+    <div class="win-controls">
+      <button class="wc-btn" id="swc-min"   title="Minimizar">&#x2013;</button>
+      <button class="wc-btn" id="swc-max"   title="Maximizar">&#x25A1;</button>
+      <button class="wc-btn wc-close" id="swc-close" title="Fechar">&#x2715;</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Left nav -->
+    <div class="left-panel">
+      <div class="lp-brand">
+        <div class="lp-brand-name">Gero</div>
+        <div class="lp-brand-tag">GESTÃO DE RH</div>
+      </div>
+      <div class="lp-steps">
+        <div class="lp-step" id="nav-1"><div class="lp-num">1</div><span class="lp-label">Servidor PostgreSQL</span></div>
+        <div class="lp-connector"></div>
+        <div class="lp-step" id="nav-2"><div class="lp-num">2</div><span class="lp-label">Dados da empresa</span></div>
+        <div class="lp-connector"></div>
+        <div class="lp-step" id="nav-3"><div class="lp-num">3</div><span class="lp-label">Administrador</span></div>
+      </div>
+      <div class="lp-footer">Seus dados ficam<br>armazenados localmente.</div>
+    </div>
+
+    <!-- Right content -->
+    <div class="right-panel">
+
+      <!-- STEP 1: PostgreSQL -->
+      <div class="step" id="step-1">
+        <div class="step-title">Servidor PostgreSQL</div>
+        <div class="step-subtitle">Informe os dados de conexão com o banco de dados</div>
+        <div id="error-step1" class="error-msg"></div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">HOST</label>
+            <input type="text" id="pg-host" class="form-input" value="localhost" placeholder="localhost"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">PORTA</label>
+            <input type="text" id="pg-port" class="form-input" value="5432" placeholder="5432" maxlength="5"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">BANCO DE DADOS</label>
+            <input type="text" id="pg-database" class="form-input" value="gero" placeholder="gero"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">USUÁRIO</label>
+            <input type="text" id="pg-user" class="form-input" value="postgres" placeholder="postgres"/>
+          </div>
+          <div class="form-group span2">
+            <label class="form-label">SENHA</label>
+            <input type="password" id="pg-password" class="form-input" placeholder="••••••••"/>
+          </div>
+        </div>
+        <div class="pg-test-row">
+          <button class="btn btn-outline" id="test-pg">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            Testar conexão
+          </button>
+          <span id="pg-test-status" class="pg-status"></span>
+        </div>
+        <div class="pg-exists-banner" id="pg-exists-banner">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <div>
+            <strong>Banco existente detectado</strong>
+            <div id="pg-exists-detail" style="font-size:11px;opacity:0.8;margin-top:2px"></div>
+          </div>
+        </div>
+        <div class="pg-new-banner" id="pg-new-banner">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          <div>
+            <strong>Banco novo</strong>
+            <div style="font-size:11px;opacity:0.8;margin-top:2px">Prossiga para configurar a empresa e o administrador.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Company data -->
+      <div class="step" id="step-2">
+        <div class="step-title">Dados da empresa</div>
+        <div class="step-subtitle">Serão usados em documentos e relatórios do sistema</div>
+        <div id="error-step2" class="error-msg"></div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">NOME FANTASIA *</label>
+            <input type="text" id="nome-fantasia" class="form-input" placeholder="ex: W3TI Serviços"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">RAZÃO SOCIAL *</label>
+            <input type="text" id="razao-social" class="form-input" placeholder="ex: W3TI Serviços Ltda"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CNPJ *</label>
+            <input type="text" id="cnpj" class="form-input" placeholder="00.000.000/0000-00" maxlength="18"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">TELEFONE</label>
+            <input type="text" id="telefone" class="form-input" placeholder="(00) 00000-0000"/>
+          </div>
+          <div class="form-group span2">
+            <label class="form-label">E-MAIL DA EMPRESA</label>
+            <input type="email" id="company-email" class="form-input" placeholder="contato@empresa.com.br"/>
+          </div>
+        </div>
+        <div class="section-sep">Endereço</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">CEP</label>
+            <input type="text" id="cep" class="form-input" placeholder="00000-000" maxlength="9"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ESTADO</label>
+            <input type="text" id="estado" class="form-input" placeholder="SP" maxlength="2" style="text-transform:uppercase"/>
+          </div>
+        </div>
+        <div class="form-grid addr" style="margin-top:10px">
+          <div class="form-group">
+            <label class="form-label">LOGRADOURO</label>
+            <input type="text" id="logradouro" class="form-input" placeholder="Rua, Av., Praça…"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">NÚMERO</label>
+            <input type="text" id="numero" class="form-input" placeholder="123"/>
+          </div>
+        </div>
+        <div class="form-grid" style="margin-top:10px">
+          <div class="form-group">
+            <label class="form-label">BAIRRO</label>
+            <input type="text" id="bairro" class="form-input" placeholder="Centro"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CIDADE</label>
+            <input type="text" id="cidade" class="form-input" placeholder="São Paulo"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Admin user -->
+      <div class="step" id="step-3">
+        <div class="step-title">Usuário administrador</div>
+        <div class="step-subtitle">Crie a conta de acesso principal do sistema</div>
+        <div id="error-step3" class="error-msg"></div>
+        <div class="form-grid">
+          <div class="form-group span2">
+            <label class="form-label">NOME COMPLETO *</label>
+            <input type="text" id="admin-name" class="form-input" placeholder="ex: Rodrigo Brito"/>
+          </div>
+          <div class="form-group span2">
+            <label class="form-label">E-MAIL *</label>
+            <input type="email" id="admin-email" class="form-input" placeholder="admin@empresa.com.br" autocomplete="off"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">SENHA *</label>
+            <input type="password" id="admin-password" class="form-input" placeholder="••••••••" autocomplete="new-password"/>
+            <span class="pass-hint">Mínimo 6 caracteres</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CONFIRMAR SENHA *</label>
+            <input type="password" id="admin-confirm" class="form-input" placeholder="••••••••" autocomplete="new-password"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Loading -->
+      <div class="step" id="step-4">
+        <div class="loading-wrap">
+          <div class="spinner"></div>
+          <div class="loading-title">Configurando o Gero…</div>
+          <div class="loading-sub">Criando banco de dados e aplicando configurações</div>
+        </div>
+      </div>
+
+      <!-- Shared footer -->
+      <div class="shared-footer" id="shared-footer">
+        <button class="btn btn-ghost hidden" id="btn-back">Voltar</button>
+        <button class="btn btn-primary" id="btn-action" disabled>
+          Continuar
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="setup.js"></script>
+</body>
+</html>

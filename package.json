@@ -1,0 +1,50 @@
+{
+  "name": "gero",
+  "version": "1.0.0",
+  "description": "Gero - HR Management Suite by W3TI SERVIÇOS DE INFORMÁTICA LTDA",
+  "main": "dist/main/index.js",
+  "author": "W3TI SERVIÇOS DE INFORMÁTICA LTDA <suporte@w3ti.com.br>",
+  "homepage": "https://w3ti.com.br",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "build": "node esbuild.config.js",
+    "watch": "node esbuild.config.js --watch",
+    "start": "npm run build && electron .",
+    "dev": "node esbuild.config.js --watch & electron . --dev",
+    "test": "node --test tests/*.test.js 2>&1 || node --test dist/tests/*.test.js",
+    "migrate": "node dist/main/run-migrations.js",
+    "seed-users": "node dist/main/seed-users.js"
+  },
+  "build": {
+    "appId": "br.com.w3ti.gero",
+    "productName": "Gero",
+    "copyright": "© 2026 W3TI SERVIÇOS DE INFORMÁTICA LTDA",
+    "directories": {
+      "output": "release"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Office"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    }
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "electron": "^42.3.2",
+    "esbuild": "^0.28.0",
+    "pg": "^8.21.0",
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/node": "^25.9.1",
+    "@types/pg": "^8.20.0",
+    "electron-builder": "^26.8.1"
+  }
+}
