@@ -23,6 +23,10 @@ const channels = [
   'payroll:generateEntries', 'payroll:getEntry', 'payroll:updateEntry',
   'payroll:approvePeriod', 'payroll:markPaid', 'payroll:generatePayslip',
   'payroll:recalculate', 'payroll:listEntries',
+  'payroll:listDecimo13', 'payroll:generateDecimo13',
+  'payroll:payDecimo13First', 'payroll:payDecimo13Second',
+  'payroll:calcRescisao', 'payroll:saveRescisao',
+  'payroll:listRescisao', 'payroll:getRescisao',
   // Timesheet
   'timesheet:list', 'timesheet:get', 'timesheet:createOrGet',
   'timesheet:listEntries', 'timesheet:addEntry', 'timesheet:updateEntry',
@@ -48,6 +52,8 @@ const channels = [
   'benefits:assignBenefit', 'benefits:updateAssignment', 'benefits:removeBenefit',
   // Documents
   'documents:list', 'documents:getDocument', 'documents:createRecord', 'documents:deleteRecord',
+  // Search
+  'search:global',
   // Modules / Studio
   'modules:list', 'modules:install', 'modules:uninstall', 'modules:toggle',
   'studio:scaffold', 'studio:readFile', 'studio:writeFile',

@@ -163,6 +163,8 @@ async function launchMainApp(): Promise<void> {
   });
 
   mainWindow.on('closed', () => { mainWindow = null; });
+  mainWindow.on('maximize',   () => mainWindow?.webContents.send('window:maximized'));
+  mainWindow.on('unmaximize', () => mainWindow?.webContents.send('window:unmaximized'));
   setSdkWebContents(mainWindow.webContents);
 }
 

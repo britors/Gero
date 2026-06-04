@@ -13,6 +13,7 @@ function tokenHash(token: string): string {
 
 export function registerAuthHandlers(): void {
   ipcMain.handle('auth:login', async (_event, email: string, password: string): Promise<AuthResult> => {
+    const normalizedEmail = email.trim().toLowerCase();
     const user = await queryOne<{
       id: string; name: string; email: string; password_hash: string;
       role_id: string; role_name: string; permissions: string[];
@@ -22,7 +23,7 @@ export function registerAuthHandlers(): void {
       FROM users u
       JOIN roles r ON r.id = u.role_id
       WHERE u.email = $1 AND u.is_active = true
-    `, [email]);
+    `, [normalizedEmail]);
 
     if (!user) throw new Error('Credenciais inválidas');
 
@@ -97,7 +98,7 @@ export function registerAuthHandlers(): void {
     const initials = data.avatar_initials ?? data.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
     return execute(
       `INSERT INTO users (name, email, password_hash, role_id, avatar_initials) VALUES ($1,$2,$3,$4,$5)`,
-      [data.name, data.email, hash, data.role_id, initials]
+      [data.name, data.email.trim().toLowerCase(), hash, data.role_id, initials]
     );
   });
 
@@ -106,7 +107,7 @@ export function registerAuthHandlers(): void {
     if (!sess || !hasPermission(sess.permissions, '*')) throw new Error('Sem permissão');
     return execute(
       `UPDATE users SET name=$1, email=$2, role_id=$3, avatar_initials=$4, avatar_color=$5, updated_at=now() WHERE id=$6`,
-      [data.name, data.email, data.role_id, data.avatar_initials, data.avatar_color, userId]
+      [data.name, data.email?.trim().toLowerCase(), data.role_id, data.avatar_initials, data.avatar_color, userId]
     );
   });
 

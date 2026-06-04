@@ -15,7 +15,7 @@ export async function renderStudio(container: HTMLElement): Promise<void> {
       <div style="padding:60px;text-align:center;color:#9CA3AF">
         <i class="ti ti-lock" style="font-size:48px;display:block;margin-bottom:16px;color:#6B7280"></i>
         <div style="font-size:18px;font-weight:600;margin-bottom:8px">Acesso Restrito</div>
-        <p>O Gero Studio está disponível apenas para a role <strong>developer</strong>.</p>
+        <p>O Gero Studio está disponível apenas para <strong>administradores</strong> e <strong>desenvolvedores</strong>.</p>
       </div>`;
     return;
   }

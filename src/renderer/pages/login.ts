@@ -33,7 +33,7 @@ export function renderLoginPage(container: HTMLElement): void {
           <form id="login-form">
             <div style="margin-bottom:16px">
               <label style="display:block;font-size:12px;font-weight:500;color:#9CA3AF;margin-bottom:6px">E-mail</label>
-              <input id="login-email" type="email" placeholder="seu@email.com" value="rodrigo@w3ti.com.br"
+              <input id="login-email" type="email" placeholder="seu@email.com"
                      autocomplete="email" style="
                 width:100%;padding:10px 12px;border-radius:8px;
                 border:1px solid #2A2D3A;background:#0F1117;
@@ -43,7 +43,7 @@ export function renderLoginPage(container: HTMLElement): void {
             </div>
             <div style="margin-bottom:24px">
               <label style="display:block;font-size:12px;font-weight:500;color:#9CA3AF;margin-bottom:6px">Senha</label>
-              <input id="login-password" type="password" placeholder="••••••••" value="Admin@123"
+              <input id="login-password" type="password" placeholder="••••••••"
                      autocomplete="current-password" style="
                 width:100%;padding:10px 12px;border-radius:8px;
                 border:1px solid #2A2D3A;background:#0F1117;
@@ -83,7 +83,7 @@ export function renderLoginPage(container: HTMLElement): void {
     errorEl.style.display = 'none';
 
     try {
-      await login(emailEl.value.trim(), passEl.value);
+      await login(emailEl.value.trim().toLowerCase(), passEl.value);
       container.remove();
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Erro ao fazer login';

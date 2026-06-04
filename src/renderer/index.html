@@ -221,7 +221,8 @@
     .avatar { width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
 
     /* ── Modal ── */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(2px); }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(2px); }
+    .modal-overlay.visible { display: flex; }
     .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); width: 520px; max-width: 90vw; max-height: 85vh; display: flex; flex-direction: column; }
     .modal-lg { width: 720px; }
     .modal-header { padding: 20px 24px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
@@ -349,6 +350,34 @@
     .gs-empty { padding: 24px 14px; text-align: center; color: var(--text-3); font-size: 13px; }
     .gs-divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
 
+    /* Icon box color variants */
+    .gs-icon-amber { background: rgba(239,159,39,0.12); color: var(--amber); }
+    .gs-icon-blue  { background: rgba(59,111,232,0.14); color: var(--blue); }
+    .gs-icon-green { background: rgba(29,158,117,0.14); color: var(--green); }
+
+    /* ── Transaction-code (tx) mode ── */
+    .gs-mode-badge {
+      position: absolute; left: 8px; z-index: 1;
+      display: flex; align-items: center;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+      color: var(--amber); background: var(--amber-bg); border: 1px solid var(--amber-dark);
+      border-radius: 4px; padding: 2px 6px;
+      font-family: 'JetBrains Mono', monospace; pointer-events: none;
+    }
+    .gs-tx-mode .gs-input { padding-left: 48px; border-color: var(--amber); }
+    .gs-item-tx { gap: 12px; }
+    .tx-code {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+      color: var(--amber); background: var(--amber-bg); border: 1px solid var(--border);
+      border-radius: 5px; padding: 3px 7px; min-width: 48px; text-align: center; flex-shrink: 0;
+    }
+    .tx-item-icon { font-size: 16px; color: var(--text-3); width: 18px; text-align: center; flex-shrink: 0; }
+    .tx-badge {
+      font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px;
+      color: var(--green); background: rgba(29,158,117,0.14); border-radius: 4px;
+      padding: 2px 6px; flex-shrink: 0;
+    }
+
     /* ── Utilities ── */
     .hidden { display: none !important; }
 
@@ -386,6 +415,11 @@
         <div class="content" id="content"></div>
       </div>
     </div>
+  </div>
+
+  <!-- Modal root (populated by components/modal.ts) -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal-box" style="padding:24px"></div>
   </div>
 
   <div class="toast-container" id="toasts"></div>

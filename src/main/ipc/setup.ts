@@ -50,7 +50,8 @@ export function registerSetupHandlers(onComplete: () => Promise<void>): void {
     await runMigrations();
 
     if (!payload.isExistingDb && payload.admin) {
-      const { name, email, password } = payload.admin;
+      const { name, password } = payload.admin;
+      const email = payload.admin.email.trim().toLowerCase();
       const hash = await bcrypt.hash(password, 12);
       const initials = name.split(' ').slice(0, 2).map((p: string) => p[0]).join('').toUpperCase();
       const roles = await query<{ id: string }>(`SELECT id FROM roles WHERE name = 'admin'`);

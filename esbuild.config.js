@@ -33,6 +33,15 @@ const rendererConfig = {
   external: [],
 };
 
+const setupRendererConfig = {
+  ...commonOptions,
+  entryPoints: ['src/renderer/setup.ts'],
+  outfile: 'dist/renderer/setup.js',
+  platform: 'browser',
+  target: 'chrome120',
+  external: [],
+};
+
 const migrationsRunnerConfig = {
   ...commonOptions,
   entryPoints: ['src/main/run-migrations.ts'],
@@ -78,6 +87,7 @@ async function build() {
     esbuild.context(mainConfig),
     esbuild.context(preloadConfig),
     esbuild.context(rendererConfig),
+    esbuild.context(setupRendererConfig),
     esbuild.context(migrationsRunnerConfig),
     esbuild.context(seedUsersConfig),
     ...testConfigs.map(cfg => esbuild.context(cfg)),
