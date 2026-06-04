@@ -38,6 +38,10 @@ function hideError(id: string): void {
 function getVal(id: string): string {
   return (document.getElementById(id) as HTMLInputElement)?.value.trim() ?? '';
 }
+// Senhas não são trimadas: preservam exatamente o que foi digitado (consistente com o login).
+function getRaw(id: string): string {
+  return (document.getElementById(id) as HTMLInputElement)?.value ?? '';
+}
 function applyMask(el: HTMLInputElement, fn: (v: string) => string): void {
   el.addEventListener('input', () => { el.value = fn(el.value); });
 }
@@ -230,9 +234,9 @@ function initStep2(): void {
 async function onFinish(): Promise<void> {
   hideError('error-step3');
   const name     = getVal('admin-name');
-  const email    = getVal('admin-email');
-  const password = getVal('admin-password');
-  const confirm  = getVal('admin-confirm');
+  const email    = getVal('admin-email').toLowerCase();
+  const password = getRaw('admin-password');
+  const confirm  = getRaw('admin-confirm');
 
   if (!name)  return showError('error-step3', 'Nome é obrigatório.');
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))

@@ -14,7 +14,7 @@ const ICONS: Record<ToastType, string> = {
 };
 
 export function showToast(message: string, type: ToastType = 'info', durationMs = 4000): void {
-  const container = document.getElementById('toast-container')!;
+  const container = document.getElementById('toasts')!;
   const toast = document.createElement('div');
   toast.style.cssText = `
     display:flex; align-items:center; gap:10px;

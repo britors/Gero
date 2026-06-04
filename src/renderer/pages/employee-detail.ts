@@ -217,8 +217,6 @@ function tabCargo(e: Employee): string {
 
 async function loadBenefits(tc: HTMLElement): Promise<void> {
   const token = getToken();
-  const benefits = await window.gero.invoke('benefits:listEmployeeBenefits', token, tc.closest('[data-emp-id]')?.getAttribute('data-emp-id') || '') as EmployeeBenefit[];
-  // Actually we need emp id - get from URL
   const id = location.hash.split('/')[2] ?? '';
   const bens = await window.gero.invoke('benefits:listEmployeeBenefits', token, id) as EmployeeBenefit[];
   tc.innerHTML = bens.length === 0

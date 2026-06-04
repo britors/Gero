@@ -58,6 +58,13 @@ export async function renderEvaluation(container: HTMLElement): Promise<void> {
       });
     });
 
+    document.getElementById('btn-new-pdi')?.addEventListener('click', () => {
+      void openPdiForm(cycles, async (data) => {
+        try { await window.gero.invoke('evaluation:createPlan', token, data); showToast('PDI criado!', 'success'); closeModal(); load(); }
+        catch (err) { showToast(err instanceof Error ? err.message : 'Erro', 'error'); }
+      });
+    });
+
     // Cycle action buttons
     container.querySelectorAll('.btn-start-cycle').forEach(btn => {
       btn.addEventListener('click', async (e) => {
@@ -174,6 +181,52 @@ export async function renderEvaluation(container: HTMLElement): Promise<void> {
       e.preventDefault();
       const fd = new FormData(e.target as HTMLFormElement);
       await onSave({ name: fd.get('name') as string, start_date: fd.get('start_date') as string, end_date: fd.get('end_date') as string });
+    });
+  }
+
+  async function openPdiForm(
+    cycles: EvaluationCycle[],
+    onSave: (data: Partial<DevelopmentPlan>) => Promise<void>,
+  ): Promise<void> {
+    const res = await window.gero.invoke('employees:list', token, { page: 1, pageSize: 1000, active: true }) as { data: Array<{ id: string; name: string }> };
+    const emps = res.data ?? [];
+    const inp = 'width:100%;padding:8px 10px;border-radius:8px;border:1px solid #2A2D3A;background:#0F1117;color:#fff;font-size:13px;outline:none';
+    const lbl = 'display:block;font-size:11px;color:#9CA3AF;margin-bottom:4px';
+    const content = `
+      <form id="pdi-form" style="display:flex;flex-direction:column;gap:14px">
+        <div><label style="${lbl}">Funcionário *</label>
+          <select name="employee_id" required style="${inp}">
+            <option value="">Selecione…</option>
+            ${emps.map(e => `<option value="${e.id}">${e.name}</option>`).join('')}
+          </select></div>
+        <div><label style="${lbl}">Ciclo de avaliação</label>
+          <select name="cycle_id" style="${inp}">
+            <option value="">Nenhum</option>
+            ${cycles.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+          </select></div>
+        <div><label style="${lbl}">Objetivo *</label>
+          <textarea name="objective" required rows="3" style="${inp};resize:vertical"></textarea></div>
+        <div><label style="${lbl}">Ações de desenvolvimento</label>
+          <textarea name="actions" rows="3" style="${inp};resize:vertical"></textarea></div>
+        <div><label style="${lbl}">Prazo</label>
+          <input name="deadline" type="date" style="${inp}"></div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:8px;border-top:1px solid #2A2D3A">
+          <button type="button" id="cancel-pdi" style="padding:8px 16px;border-radius:8px;border:1px solid #2A2D3A;background:transparent;color:#fff;cursor:pointer;font-size:13px">Cancelar</button>
+          <button type="submit" style="padding:8px 16px;border-radius:8px;border:none;background:#EF9F27;color:#fff;font-size:13px;font-weight:600;cursor:pointer">Criar</button>
+        </div>
+      </form>`;
+    openModal('Novo PDI', content);
+    document.getElementById('cancel-pdi')?.addEventListener('click', closeModal);
+    (document.getElementById('pdi-form') as HTMLFormElement)?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target as HTMLFormElement);
+      await onSave({
+        employee_id: fd.get('employee_id') as string,
+        cycle_id:    (fd.get('cycle_id') as string) || undefined,
+        objective:   fd.get('objective') as string,
+        actions:     (fd.get('actions') as string) || undefined,
+        deadline:    (fd.get('deadline') as string) || undefined,
+      });
     });
   }
 

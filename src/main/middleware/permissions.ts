@@ -1,6 +1,11 @@
 import { IpcMainInvokeEvent } from 'electron';
+import crypto from 'node:crypto';
 import { query } from '../database';
 import { UnauthorizedError } from '../../shared/types';
+
+function tokenHash(token: string): string {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
 
 interface SessionUser {
   id: string;
@@ -29,7 +34,7 @@ export async function validateSession(token: string): Promise<SessionUser | null
     JOIN users u ON u.id = s.user_id
     JOIN roles r ON r.id = u.role_id
     WHERE s.token_hash = $1 AND s.expires_at > now() AND u.is_active = true
-  `, [token]);
+  `, [tokenHash(token)]);
 
   if (rows.length === 0) return null;
   const row = rows[0]!;
