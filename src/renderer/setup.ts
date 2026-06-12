@@ -357,6 +357,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initStep1();
   initStep2();
 
+  document.getElementById('plan-type')?.addEventListener('change', window.updatePlanRestriction);
+
   document.getElementById('btn-action')!.addEventListener('click', handleAction);
   document.getElementById('btn-back')!.addEventListener('click', handleBack);
 
