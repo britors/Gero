@@ -41,12 +41,19 @@ window.updatePlanRestriction = () => {
   const dbType = (document.querySelector('input[name="db-type"]:checked') as HTMLInputElement).value;
   const plan = (document.getElementById('plan-type') as HTMLSelectElement).value;
 
-  if (dbType === 'postgres' && plan === 'gratuito') {
-    showError('error-step1', 'PostgreSQL é exclusivo para Planos Corporativos (Básico ou Dedicado).');
+  let error = '';
+  if (plan === 'gratuito' && dbType !== 'sqlite') {
+    error = 'O Plano Gratuito utiliza exclusivamente o banco de dados SQLite.';
+  } else if (plan !== 'gratuito' && dbType !== 'postgres') {
+    error = 'Planos Corporativos exigem o banco de dados PostgreSQL.';
+  }
+
+  if (error) {
+    showError('error-step1', error);
     dbTestPassed = false;
   } else {
     hideError('error-step1');
-    dbTestPassed = false; // Reset to force re-test on plan change
+    // keep dbTestPassed as is, re-test if needed
   }
   updateFooter(1);
 };
