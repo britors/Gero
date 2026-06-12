@@ -191,8 +191,6 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
           <ul style="list-style:none;padding:0;margin:0 0 24px 0;display:flex;flex-direction:column;gap:10px;flex:1">
             <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Banco de Dados Dedicado</li>
             <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Resposta prioritária em até 2h</li>
-            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Gerente de Conta Dedicado</li>
-            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Consultoria de Processos de RH</li>
             <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Treinamentos Mensais VIP</li>
           </ul>
           <button class="btn-hire-support" data-plan="dedicado" style="width:100%;padding:10px;border-radius:8px;border:none;background:#EF9F27;color:#fff;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s">Contratar Dedicado</button>
