@@ -29,6 +29,8 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
               ['usuarios',     'Usuários',      'ti-users'],
               ['perfis',       'Perfis',        'ti-shield'],
               ['integracoes',  'Integrações',   'ti-plug'],
+              ['suporte',      'Contratar Suporte', 'ti-headset'],
+              ['customizacao', 'Solicitar Customização', 'ti-wand'],
               ['banco',        'Banco de Dados','ti-database'],
               ['sobre',        'Sobre',         'ti-info-circle'],
             ].map(([tab,label,icon]) => `
@@ -116,6 +118,93 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
           </div>`).join('')}
       </div>`;
 
+    if (tab === 'customizacao') return `
+      <h2 style="font-size:16px;font-weight:600;margin-bottom:8px">Solicitar Customização</h2>
+      <p style="font-size:13px;color:#9CA3AF;margin-bottom:24px">Precisa de uma funcionalidade exclusiva ou integração sob medida para sua operação?</p>
+      
+      <div style="background:#0F1117;border:1px solid #2A2D3A;border-radius:12px;padding:32px;text-align:center">
+        <div style="width:64px;height:64px;background:#EF9F2711;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+          <i class="ti ti-wand" style="font-size:32px;color:#EF9F27"></i>
+        </div>
+        <h3 style="font-size:18px;font-weight:700;color:#fff;margin-bottom:12px">Desenvolvimento Sob Demanda</h3>
+        <p style="font-size:14px;color:#9CA3AF;line-height:1.6;max-width:500px;margin:0 auto 24px">
+          Nossa equipe de engenharia está pronta para expandir o Gero de acordo com suas necessidades. 
+          Desde novos relatórios até módulos complexos de automação.
+        </p>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:32px">
+          <div style="padding:16px;background:#1A1D27;border-radius:8px">
+            <i class="ti ti-report-analytics" style="color:#EF9F27;font-size:20px;margin-bottom:8px"></i>
+            <div style="font-size:13px;font-weight:600">Relatórios VIPS</div>
+          </div>
+          <div style="padding:16px;background:#1A1D27;border-radius:8px">
+            <i class="ti ti-api" style="color:#EF9F27;font-size:20px;margin-bottom:8px"></i>
+            <div style="font-size:13px;font-weight:600">Novas APIs</div>
+          </div>
+          <div style="padding:16px;background:#1A1D27;border-radius:8px">
+            <i class="ti ti-components" style="color:#EF9F27;font-size:20px;margin-bottom:8px"></i>
+            <div style="font-size:13px;font-weight:600">Módulos Extras</div>
+          </div>
+        </div>
+
+        <button id="btn-request-custom" style="padding:12px 24px;border-radius:8px;border:none;background:#EF9F27;color:#fff;cursor:pointer;font-size:14px;font-weight:700;transition:all 0.2s">
+          Descrever meu Projeto
+        </button>
+      </div>
+
+      <div style="margin-top:24px;display:flex;align-items:center;gap:12px;padding:16px;border-radius:8px;border:1px solid #2A2D3A;background:#1A1D2722">
+        <i class="ti ti-clock" style="color:#9CA3AF"></i>
+        <div style="font-size:12px;color:#9CA3AF">
+          O prazo médio de resposta para análise técnica de viabilidade é de <strong>48 horas úteis</strong>.
+        </div>
+      </div>
+    `;
+
+    if (tab === 'suporte') return `
+      <h2 style="font-size:16px;font-weight:600;margin-bottom:8px">Contratar Suporte Técnico</h2>
+      <p style="font-size:13px;color:#9CA3AF;margin-bottom:24px">Escolha o plano que melhor atende às necessidades da sua empresa.</p>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <!-- Plano Básico -->
+        <div style="background:#0F1117;border:1px solid #2A2D3A;border-radius:12px;padding:20px;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h3 style="font-size:18px;font-weight:700;color:#fff">Suporte Básico</h3>
+            <span style="padding:4px 8px;border-radius:6px;background:#2A2D3A;color:#9CA3AF;font-size:11px;font-weight:600">RECOMENDADO</span>
+          </div>
+          <div style="font-size:24px;font-weight:800;color:#EF9F27;margin-bottom:16px">R$ 299<span style="font-size:14px;color:#9CA3AF;font-weight:400">/mês</span></div>
+          <ul style="list-style:none;padding:0;margin:0 0 24px 0;display:flex;flex-direction:column;gap:10px;flex:1">
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Atendimento via E-mail e Ticket</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Resposta em até 24h úteis</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Atualizações de Segurança</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Base de Conhecimento Online</li>
+          </ul>
+          <button class="btn-hire-support" data-plan="basico" style="width:100%;padding:10px;border-radius:8px;border:1px solid #EF9F27;background:transparent;color:#EF9F27;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s">Contratar Básico</button>
+        </div>
+
+        <!-- Plano Dedicado -->
+        <div style="background:#0F1117;border:1px solid #EF9F27;border-radius:12px;padding:20px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+          <div style="position:absolute;top:0;right:0;background:#EF9F27;color:#fff;font-size:10px;font-weight:800;padding:4px 12px;transform:rotate(45deg) translate(15px, -10px);width:100px;text-align:center">PREMIUM</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h3 style="font-size:18px;font-weight:700;color:#fff">Suporte Dedicado</h3>
+          </div>
+          <div style="font-size:24px;font-weight:800;color:#EF9F27;margin-bottom:16px">R$ 899<span style="font-size:14px;color:#9CA3AF;font-weight:400">/mês</span></div>
+          <ul style="list-style:none;padding:0;margin:0 0 24px 0;display:flex;flex-direction:column;gap:10px;flex:1">
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Atendimento via WhatsApp e Telefone</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Resposta prioritária em até 2h</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Gerente de Conta Dedicado</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Consultoria de Processos de RH</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Treinamentos Mensais VIP</li>
+          </ul>
+          <button class="btn-hire-support" data-plan="dedicado" style="width:100%;padding:10px;border-radius:8px;border:none;background:#EF9F27;color:#fff;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s">Contratar Dedicado</button>
+        </div>
+      </div>
+      
+      <div style="margin-top:32px;padding:16px;background:#EF9F2711;border-radius:8px;border:1px solid #EF9F2722;text-align:center">
+        <div style="font-size:14px;font-weight:600;color:#EF9F27;margin-bottom:4px">Precisa de um plano personalizado?</div>
+        <div style="font-size:12px;color:#9CA3AF">Para empresas com mais de 500 funcionários, entre em contato com comercial@w3ti.com.br</div>
+      </div>
+    `;
+
     if (tab === 'integracoes') return `
       <h2 style="font-size:16px;font-weight:600;margin-bottom:20px">Integrações</h2>
       <div style="display:flex;flex-direction:column;gap:16px">
@@ -169,6 +258,40 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
         if (!isActive) { showToast('Reativação via banco de dados.', 'info'); return; }
         try { await window.gero.invoke('auth:deactivateUser', token, btn.getAttribute('data-id')!); showToast('Usuário desativado.', 'warning'); load(); }
         catch (err) { showToast(err instanceof Error ? err.message : 'Erro', 'error'); }
+      });
+    });
+
+    document.querySelectorAll('.btn-hire-support').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const plan = btn.getAttribute('data-plan');
+        const planName = plan === 'dedicado' ? 'Suporte Dedicado' : 'Suporte Básico';
+        showToast(`Solicitação de ${planName} enviada ao comercial!`, 'success');
+      });
+    });
+
+    document.getElementById('btn-request-custom')?.addEventListener('click', () => {
+      const modalContent = `
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <p style="font-size:13px;color:#9CA3AF">Descreva abaixo as funcionalidades ou mudanças que você deseja no sistema.</p>
+          <div>
+            <label style="display:block;font-size:11px;color:#9CA3AF;margin-bottom:4px">Título do Projeto</label>
+            <input type="text" placeholder="Ex: Novo módulo de integração com ERP X" style="width:100%;padding:10px;border-radius:8px;border:1px solid #2A2D3A;background:#0F1117;color:#fff;font-size:13px;outline:none">
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;color:#9CA3AF;margin-bottom:4px">Descrição Detalhada</label>
+            <textarea rows="5" placeholder="Descreva como a funcionalidade deve funcionar..." style="width:100%;padding:10px;border-radius:8px;border:1px solid #2A2D3A;background:#0F1117;color:#fff;font-size:13px;outline:none;resize:none"></textarea>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:10px">
+            <button id="btn-close-custom-modal" style="padding:10px 16px;border-radius:8px;border:1px solid #2A2D3A;background:transparent;color:#fff;cursor:pointer;font-size:13px">Cancelar</button>
+            <button id="btn-send-custom-request" style="padding:10px 20px;border-radius:8px;border:none;background:#EF9F27;color:#fff;font-size:13px;font-weight:700;cursor:pointer">Enviar para Orçamento</button>
+          </div>
+        </div>
+      `;
+      openModal('Solicitar Orçamento', modalContent);
+      document.getElementById('btn-close-custom-modal')?.addEventListener('click', closeModal);
+      document.getElementById('btn-send-custom-request')?.addEventListener('click', () => {
+        showToast('Solicitação de orçamento enviada com sucesso!', 'success');
+        closeModal();
       });
     });
   }

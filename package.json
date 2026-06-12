@@ -5,7 +5,7 @@
   "main": "dist/main/index.js",
   "author": "W3TI SERVIÇOS DE INFORMÁTICA LTDA <suporte@w3ti.com.br>",
   "homepage": "https://w3ti.com.br",
-  "license": "UNLICENSED",
+  "license": "GPL-3.0-or-later",
   "private": true,
   "scripts": {
     "build": "node esbuild.config.js",
