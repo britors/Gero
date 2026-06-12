@@ -177,7 +177,6 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
             <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Atendimento via E-mail e Ticket</li>
             <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Resposta em até 24h úteis</li>
             <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Atualizações de Segurança</li>
-            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Base de Conhecimento Online</li>
           </ul>
           <button class="btn-hire-support" data-plan="basico" style="width:100%;padding:10px;border-radius:8px;border:1px solid #EF9F27;background:transparent;color:#EF9F27;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s">Contratar Básico</button>
         </div>
