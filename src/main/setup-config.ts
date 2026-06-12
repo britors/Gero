@@ -30,6 +30,7 @@ export interface CompanyProfile {
 
 export interface SetupConfig {
   dbType:           'postgres' | 'sqlite';
+  selectedPlan:     'gratuito' | 'basico' | 'dedicado';
   pg?:              PgConfig;
   sqlite?:          SqliteConfig;
   company?:         CompanyProfile;

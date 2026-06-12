@@ -266,17 +266,27 @@
             <input type="radio" name="db-type" value="postgres" checked style="display:none" onchange="toggleDbType('postgres')">
             <div id="opt-postgres" style="padding:16px;border:2px solid #EF9F27;border-radius:10px;background:#1A1204;text-align:center">
               <strong>PostgreSQL</strong>
-              <div style="font-size:11px;color:#9CA3AF;margin-top:4px">Servidor dedicado, ideal para equipes grandes.</div>
+              <div style="font-size:11px;color:#9CA3AF;margin-top:4px">Requer Plano Básico ou Dedicado.</div>
             </div>
           </label>
           <label style="flex:1;cursor:pointer">
             <input type="radio" name="db-type" value="sqlite" style="display:none" onchange="toggleDbType('sqlite')">
             <div id="opt-sqlite" style="padding:16px;border:2px solid #2A2D3A;border-radius:10px;background:#0F1117;text-align:center">
               <strong>SQLite</strong>
-              <div style="font-size:11px;color:#9CA3AF;margin-top:4px">Arquivo local simples, ideal para uso pessoal.</div>
+              <div style="font-size:11px;color:#9CA3AF;margin-top:4px">Disponível em todos os planos.</div>
             </div>
           </label>
         </div>
+
+        <div id="plan-selection" class="form-group" style="margin-bottom:20px">
+          <label class="form-label">SEU PLANO</label>
+          <select id="plan-type" class="form-input" onchange="updatePlanRestriction()">
+            <option value="gratuito">Plano Gratuito</option>
+            <option value="basico">Suporte Básico</option>
+            <option value="dedicado">Suporte Dedicado</option>
+          </select>
+        </div>
+
 
         <div id="pg-config" class="form-grid">
           <div class="form-group">

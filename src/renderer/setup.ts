@@ -34,13 +34,24 @@ window.toggleDbType = (type: 'postgres' | 'sqlite') => {
   document.getElementById('opt-sqlite')!.style.borderColor = isPg ? '#2A2D3A' : '#EF9F27';
   document.getElementById('opt-sqlite')!.style.background = isPg ? '#0F1117' : '#1A1204';
   
-  dbTestPassed = false;
-  document.getElementById('db-test-status')!.textContent = '';
-  document.getElementById('pg-exists-banner')!.classList.remove('show');
-  document.getElementById('pg-new-banner')!.classList.remove('show');
+  updatePlanRestriction();
+};
+
+window.updatePlanRestriction = () => {
+  const dbType = (document.querySelector('input[name="db-type"]:checked') as HTMLInputElement).value;
+  const plan = (document.getElementById('plan-type') as HTMLSelectElement).value;
+
+  if (dbType === 'postgres' && plan === 'gratuito') {
+    showError('error-step1', 'PostgreSQL requer Plano Básico ou Dedicado.');
+    dbTestPassed = false;
+  } else {
+    hideError('error-step1');
+    dbTestPassed = false; // Reset to force re-test on plan change
+  }
   updateFooter(1);
 };
-declare global { interface Window { toggleDbType: (type: 'postgres' | 'sqlite') => void; } }
+declare global { interface Window { toggleDbType: (type: 'postgres' | 'sqlite') => void; updatePlanRestriction: () => void; } }
+
 
 
 // ─── DOM helpers ──────────────────────────────────────────────────────────────
@@ -320,6 +331,7 @@ async function complete(
   try {
     await window.gero.invoke('setup:complete', {
       db,
+      selectedPlan: (document.getElementById('plan-type') as HTMLSelectElement).value,
       company,
       admin,
       isExistingDb: dbIsExisting,
