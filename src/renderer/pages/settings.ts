@@ -30,7 +30,7 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
               ['usuarios',     'Usuários',      'ti-users'],
               ['perfis',       'Perfis',        'ti-shield'],
               ['integracoes',  'Integrações',   'ti-plug'],
-              ['suporte',      'Contratar Suporte', 'ti-headset'],
+              ['suporte',      'Planos',        'ti-headset'],
               ['customizacao', 'Solicitar Customização', 'ti-wand'],
               ['banco',        'Banco de Dados','ti-database'],
               ['sobre',        'Sobre',         'ti-info-circle'],
