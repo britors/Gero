@@ -172,7 +172,7 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
             <h3 style="font-size:18px;font-weight:700;color:#fff">Suporte Básico</h3>
             <span style="padding:4px 8px;border-radius:6px;background:#2A2D3A;color:#9CA3AF;font-size:11px;font-weight:600">RECOMENDADO</span>
           </div>
-          <div style="font-size:24px;font-weight:800;color:#EF9F27;margin-bottom:16px">R$ 299<span style="font-size:14px;color:#9CA3AF;font-weight:400">/mês</span></div>
+          <div style="font-size:24px;font-weight:800;color:#EF9F27;margin-bottom:16px">R$ 899<span style="font-size:14px;color:#9CA3AF;font-weight:400">/mês</span></div>
           <ul style="list-style:none;padding:0;margin:0 0 24px 0;display:flex;flex-direction:column;gap:10px;flex:1">
             <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Atendimento via E-mail e Ticket</li>
             <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Resposta em até 24h úteis</li>
