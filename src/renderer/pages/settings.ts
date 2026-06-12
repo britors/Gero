@@ -165,7 +165,21 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
       <h2 style="font-size:16px;font-weight:600;margin-bottom:8px">Contratar Suporte Técnico</h2>
       <p style="font-size:13px;color:#9CA3AF;margin-bottom:24px">Escolha o plano que melhor atende às necessidades da sua empresa.</p>
       
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px">
+        <!-- Plano Gratuito -->
+        <div style="background:#0F1117;border:1px solid #2A2D3A;border-radius:12px;padding:20px;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h3 style="font-size:18px;font-weight:700;color:#fff">Plano Gratuito</h3>
+          </div>
+          <div style="font-size:24px;font-weight:800;color:#9CA3AF;margin-bottom:16px">Grátis</div>
+          <ul style="list-style:none;padding:0;margin:0 0 24px 0;display:flex;flex-direction:column;gap:10px;flex:1">
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Infraestrutura por conta da empresa</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Acesso completo ao sistema</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-alert-triangle" style="color:#EF9F27"></i> Sem suporte técnico</li>
+          </ul>
+          <button class="btn-hire-support" data-plan="gratuito" style="width:100%;padding:10px;border-radius:8px;border:1px solid #2A2D3A;background:transparent;color:#9CA3AF;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s">Selecionar</button>
+        </div>
+
         <!-- Plano Básico -->
         <div style="background:#0F1117;border:1px solid #2A2D3A;border-radius:12px;padding:20px;display:flex;flex-direction:column">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
