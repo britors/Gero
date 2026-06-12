@@ -42,7 +42,7 @@ window.updatePlanRestriction = () => {
   const plan = (document.getElementById('plan-type') as HTMLSelectElement).value;
 
   if (dbType === 'postgres' && plan === 'gratuito') {
-    showError('error-step1', 'PostgreSQL requer Plano Básico ou Dedicado.');
+    showError('error-step1', 'PostgreSQL é exclusivo para Planos Corporativos (Básico ou Dedicado).');
     dbTestPassed = false;
   } else {
     hideError('error-step1');
