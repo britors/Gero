@@ -307,4 +307,4 @@ npm run seed-users # cria usuários iniciais
 
 ## Licença
 
-UNLICENSED — Uso exclusivo da W3TI SERVIÇOS DE INFORMÁTICA LTDA.
+Este projeto está licenciado sob a [GPLv3](LICENSE).
