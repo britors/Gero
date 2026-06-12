@@ -38,23 +38,23 @@ window.toggleDbType = (type: 'postgres' | 'sqlite') => {
 };
 
 window.updatePlanRestriction = () => {
-  const dbType = (document.querySelector('input[name="db-type"]:checked') as HTMLInputElement).value;
   const plan = (document.getElementById('plan-type') as HTMLSelectElement).value;
+  const postgresContainer = document.getElementById('container-postgres')!;
+  const sqliteInput = document.querySelector('input[name="db-type"][value="sqlite"]') as HTMLInputElement;
+  const postgresInput = document.querySelector('input[name="db-type"][value="postgres"]') as HTMLInputElement;
 
-  let error = '';
-  if (plan === 'gratuito' && dbType !== 'sqlite') {
-    error = 'O Plano Gratuito utiliza exclusivamente o banco de dados SQLite.';
-  } else if (plan !== 'gratuito' && dbType !== 'postgres') {
-    error = 'Planos Corporativos exigem o banco de dados PostgreSQL.';
-  }
-
-  if (error) {
-    showError('error-step1', error);
-    dbTestPassed = false;
+  if (plan === 'gratuito') {
+    postgresContainer.style.display = 'none';
+    if (postgresInput.checked) {
+      sqliteInput.checked = true;
+      window.toggleDbType('sqlite');
+    }
   } else {
-    hideError('error-step1');
-    // keep dbTestPassed as is, re-test if needed
+    postgresContainer.style.display = 'block';
   }
+  
+  hideError('error-step1');
+  dbTestPassed = false;
   updateFooter(1);
 };
 declare global { interface Window { toggleDbType: (type: 'postgres' | 'sqlite') => void; updatePlanRestriction: () => void; } }
