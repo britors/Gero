@@ -190,6 +190,7 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
           <div style="font-size:24px;font-weight:800;color:#EF9F27;margin-bottom:16px">R$ 1.300<span style="font-size:14px;color:#9CA3AF;font-weight:400">/mês</span></div>
           <ul style="list-style:none;padding:0;margin:0 0 24px 0;display:flex;flex-direction:column;gap:10px;flex:1">
             <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Banco de Dados Dedicado</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Administração de infraestrutura dedicada</li>
             <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Resposta prioritária em até 2h</li>
             <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9CA3AF"><i class="ti ti-check" style="color:#1D9E75"></i> Treinamentos Mensais VIP</li>
           </ul>
