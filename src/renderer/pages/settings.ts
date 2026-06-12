@@ -10,9 +10,10 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
   let activeTab = 'empresa';
 
   async function load(): Promise<void> {
-    const [users, roles] = await Promise.all([
+    const [users, roles, systemInfo] = await Promise.all([
       window.gero.invoke('auth:listUsers', token) as Promise<User[]>,
       window.gero.invoke('auth:listRoles', token) as Promise<Role[]>,
+      window.gero.invoke('app:getInfo') as Promise<any>,
     ]);
 
     container.innerHTML = `
@@ -46,7 +47,7 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
 
           <!-- Content -->
           <div id="settings-content" style="background:#1A1D27;border:1px solid #2A2D3A;border-radius:12px;padding:24px">
-            ${renderTabContent(activeTab, users, roles)}
+            ${renderTabContent(activeTab, users, roles, systemInfo)}
           </div>
         </div>
       </div>
@@ -61,15 +62,15 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
           (b as HTMLElement).style.color = a ? '#EF9F27' : '#9CA3AF';
           (b as HTMLElement).style.borderRightColor = a ? '#EF9F27' : 'transparent';
         });
-        document.getElementById('settings-content')!.innerHTML = renderTabContent(activeTab, users, roles);
-        attachContentHandlers(activeTab, users, roles);
+        document.getElementById('settings-content')!.innerHTML = renderTabContent(activeTab, users, roles, systemInfo);
+        attachContentHandlers(activeTab, users, roles, systemInfo);
       });
     });
 
-    attachContentHandlers(activeTab, users, roles);
+    attachContentHandlers(activeTab, users, roles, systemInfo);
   }
 
-  function renderTabContent(tab: string, users: User[], roles: Role[]): string {
+  function renderTabContent(tab: string, users: User[], roles: Role[], systemInfo: any): string {
     if (tab === 'empresa') return `
       <h2 style="font-size:16px;font-weight:600;margin-bottom:20px">Dados da Empresa</h2>
       <div style="display:flex;flex-direction:column;gap:16px;max-width:480px">
@@ -234,15 +235,38 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
         </svg>
         <div style="font-size:28px;font-weight:700;color:#EF9F27">Gero</div>
         <div style="font-size:13px;color:#9CA3AF;margin-top:4px">Pessoas que geram resultados.</div>
-        <div style="font-size:12px;color:#6B7280;margin-top:8px">Versão 1.0.0</div>
-        <div style="font-size:12px;color:#6B7280;margin-top:4px">© 2026 W3TI SERVIÇOS DE INFORMÁTICA LTDA</div>
+
+        <div style="margin:24px auto;max-width:320px;background:#0F1117;border-radius:12px;border:1px solid #2A2D3A;padding:16px;text-align:left">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <span style="color:#9CA3AF;font-size:12px">Versão</span>
+            <span style="color:#fff;font-size:12px;font-weight:600">${systemInfo.version}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <span style="color:#9CA3AF;font-size:12px">Sistema Operacional</span>
+            <span style="color:#fff;font-size:12px;font-weight:600">${systemInfo.osName} (${systemInfo.arch})</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <span style="color:#9CA3AF;font-size:12px">Kernel</span>
+            <span style="color:#fff;font-size:12px;font-weight:600">${systemInfo.release}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:16px">
+            <span style="color:#9CA3AF;font-size:12px">Empacotamento AUR</span>
+            <span style="color:${systemInfo.isAur?'#1D9E75':'#D85A30'};font-size:12px;font-weight:600">${systemInfo.isAur?'Sim':'Não'}</span>
+          </div>
+
+          <button id="btn-check-update" style="width:100%;padding:10px;border-radius:8px;border:none;background:#EF9F27;color:#fff;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+            <i class="ti ti-refresh"></i> Verificar Atualizações
+          </button>
+        </div>
+
+        <div style="font-size:12px;color:#6B7280;margin-top:8px">© 2026 W3TI SERVIÇOS DE INFORMÁTICA LTDA</div>
         <div style="font-size:12px;color:#6B7280;margin-top:2px">br.com.w3ti.gero &bull; suporte@w3ti.com.br</div>
       </div>`;
 
     return `<p style="color:#6B7280">Em desenvolvimento.</p>`;
   }
 
-  function attachContentHandlers(tab: string, users: User[], roles: Role[]): void {
+  function attachContentHandlers(tab: string, users: User[], roles: Role[], systemInfo: any): void {
     document.getElementById('btn-new-user')?.addEventListener('click', () => {
       openUserForm(roles, async (data) => {
         try { await window.gero.invoke('auth:createUser', token, data); showToast('Usuário criado!', 'success'); closeModal(); load(); }
@@ -291,6 +315,46 @@ export async function renderSettings(container: HTMLElement): Promise<void> {
         showToast('Solicitação de orçamento enviada com sucesso!', 'success');
         closeModal();
       });
+    });
+
+    document.getElementById('btn-check-update')?.addEventListener('click', async () => {
+      const btn = document.getElementById('btn-check-update') as HTMLButtonElement;
+      const originalHtml = btn.innerHTML;
+      
+      btn.disabled = true;
+      btn.innerHTML = `<i class="ti ti-loader spin"></i> Verificando...`;
+      
+      try {
+        const update = await window.gero.invoke('app:checkForUpdates') as { available: boolean; version: string };
+        
+        if (update.available) {
+          btn.innerHTML = `<i class="ti ti-download"></i> Baixar v${update.version}`;
+          btn.style.background = '#1D9E75';
+          btn.disabled = false;
+          
+          btn.onclick = async () => {
+            btn.disabled = true;
+            btn.innerHTML = `<i class="ti ti-loader spin"></i> Instalando...`;
+            showToast('Baixando atualização...', 'info');
+            
+            const result = await window.gero.invoke('app:performUpdate') as { success: boolean };
+            if (result.success) {
+              showToast('Pronto para instalar. Reiniciando...', 'success');
+              setTimeout(() => {
+                window.gero.invoke('window:close');
+              }, 2000);
+            }
+          };
+        } else {
+          showToast('Você já está na versão mais recente.', 'success');
+          btn.innerHTML = originalHtml;
+          btn.disabled = false;
+        }
+      } catch (err) {
+        showToast('Erro ao verificar atualizações.', 'error');
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+      }
     });
   }
 

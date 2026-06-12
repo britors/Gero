@@ -18,6 +18,7 @@ import { registerDocumentHandlers } from './ipc/documents';
 import { registerModuleHandlers, registerStudioHandlers } from './ipc/modules';
 import { registerDashboardHandlers } from './ipc/dashboard';
 import { registerSearchHandlers } from './ipc/search';
+import { registerSystemHandlers } from './ipc/system';
 import { loadActiveModules } from './runtime/module-loader';
 import { setSdkWebContents } from './runtime/sdk-bridge';
 import { eventBus, GeroEvents } from './runtime/event-bus';
@@ -125,6 +126,7 @@ async function launchMainApp(): Promise<void> {
     registerStudioHandlers();
     registerDashboardHandlers();
     registerSearchHandlers();
+    registerSystemHandlers();
     registerIntegrationEvents();
     handlersRegistered = true;
   }

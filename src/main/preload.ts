@@ -62,6 +62,8 @@ const channels = [
   'setup:checkPgConnection', 'setup:checkPgExists', 'setup:complete',
   // Window controls
   'window:minimize', 'window:toggleMaximize', 'window:close',
+  // System / Updates
+  'app:getInfo', 'app:checkForUpdates', 'app:performUpdate',
 ] as const;
 
 contextBridge.exposeInMainWorld('gero', {
