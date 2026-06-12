@@ -255,12 +255,30 @@
     <!-- Right content -->
     <div class="right-panel">
 
-      <!-- STEP 1: PostgreSQL -->
+      <!-- STEP 1: DB Selection -->
       <div class="step active" id="step-1">
-        <div class="step-title">Servidor PostgreSQL</div>
-        <div class="step-subtitle">Informe os dados de conexão com o banco de dados</div>
+        <div class="step-title">Banco de Dados</div>
+        <div class="step-subtitle">Escolha onde os dados serão armazenados</div>
         <div id="error-step1" class="error-msg"></div>
-        <div class="form-grid">
+
+        <div style="display:flex;gap:16px;margin-bottom:24px">
+          <label style="flex:1;cursor:pointer">
+            <input type="radio" name="db-type" value="postgres" checked style="display:none" onchange="toggleDbType('postgres')">
+            <div id="opt-postgres" style="padding:16px;border:2px solid #EF9F27;border-radius:10px;background:#1A1204;text-align:center">
+              <strong>PostgreSQL</strong>
+              <div style="font-size:11px;color:#9CA3AF;margin-top:4px">Servidor dedicado, ideal para equipes grandes.</div>
+            </div>
+          </label>
+          <label style="flex:1;cursor:pointer">
+            <input type="radio" name="db-type" value="sqlite" style="display:none" onchange="toggleDbType('sqlite')">
+            <div id="opt-sqlite" style="padding:16px;border:2px solid #2A2D3A;border-radius:10px;background:#0F1117;text-align:center">
+              <strong>SQLite</strong>
+              <div style="font-size:11px;color:#9CA3AF;margin-top:4px">Arquivo local simples, ideal para uso pessoal.</div>
+            </div>
+          </label>
+        </div>
+
+        <div id="pg-config" class="form-grid">
           <div class="form-group">
             <label class="form-label">HOST</label>
             <input type="text" id="pg-host" class="form-input" value="localhost" placeholder="localhost"/>
@@ -282,12 +300,18 @@
             <input type="password" id="pg-password" class="form-input" placeholder="••••••••"/>
           </div>
         </div>
+
+        <div id="sqlite-config" class="form-group" style="display:none">
+          <label class="form-label">ARQUIVO DO BANCO</label>
+          <input type="text" id="sqlite-file" class="form-input" value="gero.db" placeholder="gero.db"/>
+        </div>
+
         <div class="pg-test-row">
-          <button class="btn btn-outline" id="test-pg">
+          <button class="btn btn-outline" id="test-db">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
             Testar conexão
           </button>
-          <span id="pg-test-status" class="pg-status"></span>
+          <span id="db-test-status" class="pg-status"></span>
         </div>
         <div class="pg-exists-banner" id="pg-exists-banner">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>

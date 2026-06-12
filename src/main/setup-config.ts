@@ -10,6 +10,10 @@ export interface PgConfig {
   password: string;
 }
 
+export interface SqliteConfig {
+  file: string;
+}
+
 export interface CompanyProfile {
   nomeFantasia: string;
   razaoSocial:  string;
@@ -25,10 +29,13 @@ export interface CompanyProfile {
 }
 
 export interface SetupConfig {
-  pg:               PgConfig;
+  dbType:           'postgres' | 'sqlite';
+  pg?:              PgConfig;
+  sqlite?:          SqliteConfig;
   company?:         CompanyProfile;
   setupCompletedAt: string;
 }
+
 
 // ─── Encryption helpers ───────────────────────────────────────────────────────
 
@@ -68,7 +75,9 @@ export function readSetupConfig(): SetupConfig | null {
 export function writeSetupConfig(cfg: SetupConfig): void {
   const toWrite: SetupConfig = {
     ...cfg,
-    pg: { ...cfg.pg, password: encryptPwd(cfg.pg.password) },
   };
+  if (toWrite.pg) {
+    toWrite.pg.password = encryptPwd(toWrite.pg.password);
+  }
   fs.writeFileSync(configPath(), JSON.stringify(toWrite, null, 2), 'utf8');
 }

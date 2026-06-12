@@ -22,8 +22,26 @@ interface CompanyProfile {
 
 // ─── State ────────────────────────────────────────────────────────────────────
 
-let pgTestPassed = false;
-let pgIsExisting = false;
+let dbTestPassed = false;
+let dbIsExisting = false;
+
+window.toggleDbType = (type: 'postgres' | 'sqlite') => {
+  const isPg = type === 'postgres';
+  document.getElementById('pg-config')!.style.display = isPg ? 'grid' : 'none';
+  document.getElementById('sqlite-config')!.style.display = isPg ? 'none' : 'block';
+  document.getElementById('opt-postgres')!.style.borderColor = isPg ? '#EF9F27' : '#2A2D3A';
+  document.getElementById('opt-postgres')!.style.background = isPg ? '#1A1204' : '#0F1117';
+  document.getElementById('opt-sqlite')!.style.borderColor = isPg ? '#2A2D3A' : '#EF9F27';
+  document.getElementById('opt-sqlite')!.style.background = isPg ? '#0F1117' : '#1A1204';
+  
+  dbTestPassed = false;
+  document.getElementById('db-test-status')!.textContent = '';
+  document.getElementById('pg-exists-banner')!.classList.remove('show');
+  document.getElementById('pg-new-banner')!.classList.remove('show');
+  updateFooter(1);
+};
+declare global { interface Window { toggleDbType: (type: 'postgres' | 'sqlite') => void; } }
+
 
 // ─── DOM helpers ──────────────────────────────────────────────────────────────
 
@@ -113,9 +131,9 @@ function updateNav(active: number): void {
 function updateFooter(step: number): void {
   switch (step) {
     case 1:
-      if (!pgTestPassed) {
+      if (!dbTestPassed) {
         setFooter({ backVisible: false, label: 'Continuar', disabled: true });
-      } else if (pgIsExisting) {
+      } else if (dbIsExisting) {
         setFooter({ backVisible: false, label: 'Conectar ao banco existente', icon: 'check', disabled: false, success: true });
       } else {
         setFooter({ backVisible: false, label: 'Continuar', disabled: false });
@@ -149,15 +167,15 @@ function handleBack(): void {
 // ─── Step 1: PostgreSQL ───────────────────────────────────────────────────────
 
 function onNext1(): void {
-  if (!pgTestPassed) return;
-  pgIsExisting ? void finalizeExisting() : showStep(2);
+  if (!dbTestPassed) return;
+  dbIsExisting ? void finalizeExisting() : showStep(2);
 }
 
 function initStep1(): void {
-  document.getElementById('test-pg')!.addEventListener('click', async () => {
+  document.getElementById('test-db')!.addEventListener('click', async () => {
     hideError('error-step1');
-    const btn      = document.getElementById('test-pg') as HTMLButtonElement;
-    const statusEl = document.getElementById('pg-test-status')!;
+    const btn      = document.getElementById('test-db') as HTMLButtonElement;
+    const statusEl = document.getElementById('db-test-status')!;
     const existsBanner = document.getElementById('pg-exists-banner')!;
     const newBanner    = document.getElementById('pg-new-banner')!;
 
@@ -167,18 +185,21 @@ function initStep1(): void {
     existsBanner.classList.remove('show');
     newBanner.classList.remove('show');
 
-    const pgCfg: PgConfig = {
+    const dbType = (document.querySelector('input[name="db-type"]:checked') as HTMLInputElement).value;
+    const dbCfg: any = dbType === 'postgres' ? {
       host:     getVal('pg-host') || 'localhost',
       port:     parseInt(getVal('pg-port') || '5432', 10),
       database: getVal('pg-database') || 'gero',
       user:     getVal('pg-user') || 'postgres',
-      password: getVal('pg-password'),
+      password: getRaw('pg-password'),
+    } : {
+      file: getVal('sqlite-file') || 'gero.db'
     };
 
     try {
-      const connRes = await window.gero.invoke('setup:checkPgConnection', pgCfg) as { ok: boolean; error?: string };
+      const connRes = await window.gero.invoke('setup:checkPgConnection', { type: dbType, ...dbCfg }) as { ok: boolean; error?: string };
       if (!connRes.ok) {
-        pgTestPassed = false;
+        dbTestPassed = false;
         statusEl.textContent = `Falha: ${connRes.error ?? 'Erro desconhecido'}`;
         statusEl.className = 'pg-status error';
         updateFooter(1);
@@ -187,12 +208,12 @@ function initStep1(): void {
 
       statusEl.textContent = 'Conexão OK!';
       statusEl.className = 'pg-status ok';
-      pgTestPassed = true;
+      dbTestPassed = true;
 
-      const existsRes = await window.gero.invoke('setup:checkPgExists', pgCfg) as { exists: boolean; userCount?: number };
-      pgIsExisting = existsRes.exists;
+      const existsRes = await window.gero.invoke('setup:checkPgExists', { type: dbType, ...dbCfg }) as { exists: boolean; userCount?: number };
+      dbIsExisting = existsRes.exists;
 
-      if (pgIsExisting) {
+      if (dbIsExisting) {
         document.getElementById('pg-exists-detail')!.textContent =
           `${existsRes.userCount} usuário(s) encontrado(s) — configure apenas a conexão.`;
         existsBanner.classList.add('show');
@@ -200,7 +221,7 @@ function initStep1(): void {
         newBanner.classList.add('show');
       }
     } catch (err) {
-      pgTestPassed = false;
+      dbTestPassed = false;
       statusEl.textContent = `Erro: ${err instanceof Error ? err.message : String(err)}`;
       statusEl.className = 'pg-status error';
     } finally {
@@ -246,12 +267,15 @@ async function onFinish(): Promise<void> {
   if (password !== confirm)
     return showError('error-step3', 'As senhas não coincidem.');
 
-  const pgCfg: PgConfig = {
+  const dbType = (document.querySelector('input[name="db-type"]:checked') as HTMLInputElement).value;
+  const dbCfg: any = dbType === 'postgres' ? {
     host:     getVal('pg-host') || 'localhost',
     port:     parseInt(getVal('pg-port') || '5432', 10),
     database: getVal('pg-database') || 'gero',
     user:     getVal('pg-user') || 'postgres',
-    password: getVal('pg-password'),
+    password: getRaw('pg-password'),
+  } : {
+    file: getVal('sqlite-file') || 'gero.db'
   };
 
   const company: CompanyProfile = {
@@ -268,38 +292,41 @@ async function onFinish(): Promise<void> {
     email:        getVal('company-email') || undefined,
   };
 
-  await complete(pgCfg, company, { name, email, password });
+  await complete({ type: dbType, ...dbCfg }, company, { name, email, password });
 }
 
 // ─── Finalize: existing DB ────────────────────────────────────────────────────
 
 async function finalizeExisting(): Promise<void> {
-  const pgCfg: PgConfig = {
+  const dbType = (document.querySelector('input[name="db-type"]:checked') as HTMLInputElement).value;
+  const dbCfg: any = dbType === 'postgres' ? {
     host:     getVal('pg-host') || 'localhost',
     port:     parseInt(getVal('pg-port') || '5432', 10),
     database: getVal('pg-database') || 'gero',
     user:     getVal('pg-user') || 'postgres',
-    password: getVal('pg-password'),
+    password: getRaw('pg-password'),
+  } : {
+    file: getVal('sqlite-file') || 'gero.db'
   };
-  await complete(pgCfg, undefined, undefined);
+  await complete({ type: dbType, ...dbCfg }, undefined, undefined);
 }
 
 async function complete(
-  pg: PgConfig,
+  db: any,
   company: CompanyProfile | undefined,
   admin: { name: string; email: string; password: string } | undefined,
 ): Promise<void> {
   showStep(4);
   try {
     await window.gero.invoke('setup:complete', {
-      pg,
+      db,
       company,
       admin,
-      isExistingDb: pgIsExisting,
+      isExistingDb: dbIsExisting,
       setupCompletedAt: new Date().toISOString(),
     });
   } catch (err) {
-    const backStep = pgIsExisting ? 1 : 3;
+    const backStep = dbIsExisting ? 1 : 3;
     showStep(backStep);
     showError(`error-step${backStep}`, `Erro: ${err instanceof Error ? err.message : String(err)}`);
   }
